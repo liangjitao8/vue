@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div id="head">
+				<span>todoList</span>
+				<input type="text" @keydown.enter="addTodo" v-model="temptodo" placeholder="输入todo" />
+			</div>
+			<div id="content">
+				<h1 class="title">正在做</h1>
+				<div id="doinglist" v-for="item,index in doinglist">
+					<input type="checkbox" :checked="item.isdone" @click="doit(item.id)" :key="item.id"/>
+					<label>{{item.name}}</label>
+					<button @click="removeTodo(item.id)">删除</button>
+				</div>
+				<h1 class="title">做完了</h1>
+				<div id="donelist" v-for="item,index in donelist" >
+					<input type="checkbox" :checked="item.isdone" @click="doit(item.id)" :key="item.id"/>
+					<label>{{item.name}}</label>
+					<button @click="removeTodo(item.id)">删除</button>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: "#app",
+				data: {
+					temptodo: '',
+					todolist: []
+				},
+				computed: {
+					doinglist: function() {
+						var arr = this.todolist.filter(function(item, index) {
+							return item.isdone == false;
+						})
+						return arr;
+					},
+					donelist: function() {
+						var arr = this.todolist.filter(function(item, index) {
+							return item.isdone == true;
+						})
+						return arr;
+					}
+				},
+				methods: {
+					addTodo: function() {
+						var temp = {
+							id: this.todolist.length,
+							name: this.temptodo,
+							isdone: false
+						};
+						this.todolist.push(temp);
+						this.temptodo = '';
+					},
+					removeTodo: function(id) {
+						this.todolist.splice(id, 1);
+						this.todolist.forEach(function(item, index) {
+							item.id = index;
+						})
+					},
+					doit: function(id) {
+						this.todolist.forEach(function(item, index) {
+							if (item.id == id) {
+								item.isdone = !item.isdone;
+							}
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
